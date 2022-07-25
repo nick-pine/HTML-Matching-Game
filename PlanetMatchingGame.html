@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matching Game</title>
+
+  <!------------------------------ css section ------------------------------>
+
+  <style>
+    html {
+      height: 100%;
+      background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+      overflow: hidden;
+    }
+
+    p {
+      padding: 5px;
+      text-align: center;
+      font-family: 'lato', sans-serif;
+      color: white;
+      background: -webkit-linear-gradient(#192344, white);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title {
+      font-weight: 300;
+      font-size: 50px;
+      letter-spacing: 10px;
+    }
+
+    .instructions {
+      font-size: 15px;
+    }
+
+    .roundNum {
+      font-size: 30px;
+    }
+
+    img {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+    }
+
+    img:hover {
+      border: 2px solid white;
+      border-radius: 100px;
+    }
+
+    .box {
+      display: flex;
+      justify-content: center;
+    }
+
+    .gameBox {
+      background-image: url(images/planetmatch/space.jpg);
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      margin: 10px;
+      width: 500px;
+      height: 500px;
+      border: 1px solid;
+      border-radius: 20px;
+      box-shadow: 5px 5px 5px;
+    }
+
+    button {
+      margin: 20px;
+      background-color: #090A0F;
+      border-radius: 20px;
+      box-shadow: 5px 5px 5px;
+    }
+
+    button:active {
+      box-shadow: 1px 1px 1px;
+    }
+  </style>
+</head>
+
+<!------------------------------ html section ------------------------------>
+
+<body onload="generatePlanets()">
+  <p class="title">Planet Match</p>
+  <p class="instructions">Find the extra planet to the left.</p>
+  <p class="roundNum">Round <t id="round">1</t>
+  </p>
+
+  <div class="box">
+    <div id="leftSide" class="gameBox"></div>
+    <div id="rightSide" class="gamebox"></div>
+  </div>
+
+  <div class="box">
+    <button onclick="startGame()">
+      <p>Restart</p>
+    </button>
+  </div>
+
+  <!------------------------------ js section ------------------------------>
+
+  <script>
+    var planetArray = ['sun.png', 'purpleP.png', 'blueP.png', 'moon.png', 'redP.png']
+    let numberOfPlanets = 1;
+    let round = 0;
+    const theLeftSide = document.getElementById("leftSide");
+    const theRightSide = document.getElementById("rightSide");
+
+    function startGame() {
+      location.reload();
+      return false;
+    }
+
+    function generatePlanets() {
+      for (i = 0; i < numberOfPlanets; i++) {
+        let randomPlanet = Math.floor(Math.random() * planetArray.length);
+        let planet = document.createElement("img");
+        planet.src = 'images/planetmatch/' + planetArray[randomPlanet];
+
+        let randomTop = Math.floor(Math.random() * 400 + 1);
+        let randomleft = Math.floor(Math.random() * 400 + 1);
+        let randomSize = Math.floor(Math.random() * (100 - 30) + 30);
+
+        planet.style.top = randomTop + "px";
+        planet.style.left = randomleft + "px";
+        planet.style.height = randomSize + "px";
+        planet.style.width = randomSize + "px";
+
+        theLeftSide.appendChild(planet);
+      }
+
+      const leftSideImages = theLeftSide.cloneNode(true);
+      leftSideImages.removeChild(leftSideImages.lastChild);
+      theRightSide.appendChild(leftSideImages);
+
+      round += 1;
+
+      theLeftSide.lastChild.addEventListener("click", nextLevel);
+      document.getElementById("leftSide").addEventListener("click", gameOver);
+      document.getElementById("round").innerHTML = round;
+    }
+
+    function nextLevel() {
+      event.stopPropagation();
+      numberOfPlanets += 1;
+
+      function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+          parent.removeChild(parent.firstChild);
+        }
+      }
+      removeAllChildNodes(theLeftSide);
+      removeAllChildNodes(theRightSide);
+
+      generatePlanets();
+
+    }
+
+    function gameOver() {
+      alert("Game Over! " + "\n\n\Rounds Completed: " + round);
+      theLeftSide.lastChild.removeEventListener("click", nextLevel);
+      document.body.removeEventListener("click", gameOver);
+    }
+
+  </script>
+</body>
+
+</html>
